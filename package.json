@@ -16,6 +16,14 @@
       {
         "command": "hlslpreprocessor.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "hlslpreprocessor.loadVsdf",
+        "title": "Load Vsdf"
+      },
+      {
+        "command": "hlslpreprocessor.showCode",
+        "title": "Show Preprocessed Code"
       }
     ]
   },
