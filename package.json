@@ -25,7 +25,26 @@
         "command": "hlslpreprocessor.showCode",
         "title": "Show Preprocessed Code"
       }
-    ]
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "shaderListView",
+          "title": "ShaderList",
+          "icon": "resources/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "shaderListView": [
+        {
+          "id": "shaderListView",
+          "name": "ShaderListView",
+          "canToggleVisibility": true,
+          "icon": "resources/icon.svg"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

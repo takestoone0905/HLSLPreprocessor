@@ -2,8 +2,9 @@ import * as vscode from 'vscode';
 import { PHlslProvider } from './phlslProvider';
 import { ShaderDefinition } from './sdfAnalyzer';
 import { SdfAnalyzer } from './sdfAnalyzer';
+import { ShaderTreeProvider } from './shaderTreeProvider';
 
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "hlslpreprocessor" is now active!');
 	const phlslProvider = new PHlslProvider();
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('phlsl', phlslProvider));
@@ -20,18 +21,16 @@ export function activate(context: vscode.ExtensionContext) {
 		})
 	);
 
+
+	const shaderTreeProvider = new ShaderTreeProvider();
+	await shaderTreeProvider.loadShaderList();
+	vscode.window.registerTreeDataProvider(
+		'shaderListView',
+		shaderTreeProvider
+	);
 	context.subscriptions.push(
 		vscode.commands.registerCommand('hlslpreprocessor.loadVsdf', () => {
-			let shaderDefinisions = null;
-			if (shaderDefinisions !== null) {
-				showQuickPick(context, shaderDefinisions);
-				return;
-			} else {
-				loadVsdf(context).then((result) => {
-					shaderDefinisions = result;
-					showQuickPick(context, shaderDefinisions);
-				});
-			}
+			shaderTreeProvider.refresh();
 		})
 	);
 
@@ -43,37 +42,6 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	context.subscriptions.push(disposable);
-}
-
-function showQuickPick(context: vscode.ExtensionContext, shaderDefinisions: ShaderDefinition[]) {
-	vscode.window.showQuickPick(shaderDefinisions.map((arg) => arg.name)).then((selectedShaderName) => {
-		if (selectedShaderName) {
-			const shaderDefinision = shaderDefinisions.find((shaderDefinision) => {
-				return shaderDefinision.name === selectedShaderName;
-			});
-			vscode.window.showInformationMessage(shaderDefinision!.toString());
-		}
-	});
-}
-
-async function loadVsdf(context: vscode.ExtensionContext) {
-	const shaderDefinisions: ShaderDefinition[] = [];
-	const promises: any[] = [];
-	await vscode.workspace.findFiles('**/*.vsdf.json').then((uris) => {
-		uris.forEach((uri) => {
-			promises.push(
-				vscode.workspace.fs.readFile(uri).then((content: any) => {
-					const analyzeResult = SdfAnalyzer.analyze(content);
-					for (let i = 0; i < analyzeResult.length; i++) {
-						shaderDefinisions.push(analyzeResult[i]);
-					}
-				})
-			);
-		});
-	});
-
-	await Promise.all(promises);
-	return shaderDefinisions;
 }
 
 // This method is called when your extension is deactivated
