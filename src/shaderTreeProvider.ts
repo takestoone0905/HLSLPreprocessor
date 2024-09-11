@@ -23,9 +23,9 @@ export class ShaderListEntry extends vscode.TreeItem {
     ) {
         super(model.name, collapsibleState);
         if (this.isFile) {
-            this.contextValue = 'vsdf';
+            this.contextValue = model.name === 'USER_CUSTOM' ? 'USER_CUSTOM' : 'vsdf';
         } else {
-            this.contextValue = model.name === 'USER CUSTOM' ? 'USER CUSTOM' : 'shader';
+            this.contextValue = (model as ShaderEntry).shaderDefinition.isUserCustom ? 'userCustomShader' : 'shader';
         }
         this.tooltip = `${this.name}-Hello!`;
         this.description = `${this.name}ですよ`;
@@ -80,7 +80,7 @@ export class ShaderTreeProvider implements vscode.TreeDataProvider<ShaderListEnt
         });
         await Promise.all(promises);
         // userがカスタムのdefineの組み合わせを作成できるようにする
-        shaderMap.set("USER CUSTOM", []);
+        shaderMap.set("USER_CUSTOM", []);
         this.#shaderMap = shaderMap;
     }
 
@@ -99,5 +99,23 @@ export class ShaderTreeProvider implements vscode.TreeDataProvider<ShaderListEnt
             const shaderFile = element.model as VsdfFile;
             return Promise.resolve(this.#shaderMap.get(shaderFile.name)!.map(shader => new ShaderListEntry(new ShaderEntry(shader), vscode.TreeItemCollapsibleState.None)));
         }
+    }
+
+    addShader(name: string) {
+        const userCustom = this.#shaderMap.get("USER_CUSTOM");
+        if (userCustom?.some(s => s.name === name)) {
+            return;
+        }
+        this.#shaderMap.get("USER_CUSTOM")!.push(new ShaderDefinition(name, [], true));
+        this._onDidChangeTreeData.fire();
+    }
+
+    removeShader(name: string) {
+        const userCustom = this.#shaderMap.get("USER_CUSTOM");
+        const target = userCustom?.find(s => s.name === name);
+        if (target) {
+            userCustom?.splice(userCustom.indexOf(target), 1);
+        }
+        this._onDidChangeTreeData.fire();
     }
 }

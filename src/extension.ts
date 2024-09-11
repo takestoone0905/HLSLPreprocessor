@@ -2,8 +2,8 @@ import * as vscode from 'vscode';
 import { PHlslProvider } from './phlslProvider';
 import { ShaderDefinition } from './sdfAnalyzer';
 import { SdfAnalyzer } from './sdfAnalyzer';
-import { ShaderTreeProvider } from './shaderTreeProvider';
-import { ShaderDefineProvider } from './ShaderDefineProvider';
+import { ShaderListEntry, ShaderTreeProvider } from './shaderTreeProvider';
+import { ShaderDefineEntry, ShaderDefineProvider } from './ShaderDefineProvider';
 
 export async function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "hlslpreprocessor" is now active!');
@@ -49,12 +49,12 @@ export async function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('phlsl', phlslProvider));
 
 	context.subscriptions.push(
-		vscode.commands.registerCommand('hlslpreprocessor.showCode', async () => {
-			if (shaderDefineProvider.currentShader === null) {
+		vscode.commands.registerCommand('hlslpreprocessor.showCode', async (element) => {
+			const selectedEntry = element as ShaderListEntry;
+			if (!selectedEntry) {
 				return;
 			}
-			const defines = shaderDefineProvider.currentShader.defines.filter((define) => define.isActive);
-			phlslProvider.currentDefines = defines;
+			phlslProvider.currentDefines = selectedEntry.shaderDefinition!.defines.filter((define) => define.isActive);
 			const name = vscode.window.activeTextEditor!.document.fileName;
 			let uri = vscode.Uri.parse('phlsl:' + name + "(processed)");
 			if (vscode.workspace.textDocuments.find((doc) => doc.uri.toString() === uri.toString())) {
@@ -62,6 +62,18 @@ export async function activate(context: vscode.ExtensionContext) {
 			}
 			const doc = await vscode.workspace.openTextDocument(uri);
 			await vscode.window.showTextDocument(doc, { preview: false });
+		})
+	);
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand('hlslpreprocessor.addUserCustomShader', () => {
+			shaderTreeProvider.addShader("UserCustom");
+		})
+	);
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand('hlslpreprocessor.removeUserCustomShader', (element) => {
+			shaderTreeProvider.removeShader(element.name);
 		})
 	);
 

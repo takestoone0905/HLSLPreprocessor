@@ -2,9 +2,11 @@ import { DefinedSymbol } from './definedSymbol';
 export class ShaderDefinition {
     #name: string = "";
     #defines: DefinedSymbol[] = [];
-    constructor(name: string, defines: DefinedSymbol[]) {
+    #isUserCustom: boolean = false;
+    constructor(name: string, defines: DefinedSymbol[], userCustom = false) {
         this.#name = name;
         this.#defines = defines;
+        this.#isUserCustom = userCustom;
     }
 
     get name() {
@@ -13,6 +15,10 @@ export class ShaderDefinition {
 
     get defines() {
         return this.#defines;
+    }
+    
+    get isUserCustom() {
+        return this.#isUserCustom;
     }
 
     static Parse(json: { name: string, VS: string, PS: string }) {

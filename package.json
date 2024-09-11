@@ -24,6 +24,14 @@
       {
         "command": "hlslpreprocessor.showCode",
         "title": "Show Preprocessed Code"
+      },
+      {
+        "command": "hlslpreprocessor.addUserCustomShader",
+        "title": "Add User Custom Shader"
+      },
+      {
+        "command": "hlslpreprocessor.removeUserCustomShader",
+        "title": "Remove User Custom Shader"
       }
     ],
     "viewsContainers": {
@@ -56,6 +64,14 @@
         {
           "command": "hlslpreprocessor.showCode",
           "when": "view == shaderTreeView && viewItem == shader"
+        },
+        {
+          "command": "hlslpreprocessor.addUserCustomShader",
+          "when": "view == shaderTreeView && viewItem == USER_CUSTOM"
+        },
+        {
+          "command": "hlslpreprocessor.removeUserCustomShader",
+          "when": "view == shaderTreeView && viewItem == userCustomShader"
         }
       ]
     }
