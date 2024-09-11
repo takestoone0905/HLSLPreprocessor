@@ -44,6 +44,14 @@
           "icon": "resources/icon.svg"
         }
       ]
+    },
+    "menus": {
+      "view/item/context": [
+        {
+          "command": "hlslpreprocessor.showCode",
+          "when": "view == shaderListView && viewItem == shader"
+        }
+      ]
     }
   },
   "scripts": {
