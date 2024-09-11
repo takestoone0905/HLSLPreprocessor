@@ -3,6 +3,7 @@ import { PHlslProvider } from './phlslProvider';
 import { ShaderDefinition } from './sdfAnalyzer';
 import { SdfAnalyzer } from './sdfAnalyzer';
 import { ShaderTreeProvider } from './shaderTreeProvider';
+import { ShaderDefineProvider } from './ShaderDefineProvider';
 
 export async function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "hlslpreprocessor" is now active!');
@@ -22,12 +23,29 @@ export async function activate(context: vscode.ExtensionContext) {
 	);
 
 
+	const shaderDefineProvider = new ShaderDefineProvider();
+	vscode.window.registerTreeDataProvider(
+		'shaderDefinesView',
+		shaderDefineProvider
+	);
+
+
 	const shaderTreeProvider = new ShaderTreeProvider();
 	await shaderTreeProvider.loadShaderList();
 	vscode.window.registerTreeDataProvider(
-		'shaderListView',
+		'shaderTreeView',
 		shaderTreeProvider
 	);
+
+	const treeView = vscode.window.createTreeView('shaderTreeView', { treeDataProvider: shaderTreeProvider });
+	treeView.onDidChangeSelection((e) => {
+		const selected = e.selection[0];
+		if (selected && selected.isShader) {
+			shaderDefineProvider.showShaderDefinition(selected.shaderDefinition);
+		}
+	});
+	context.subscriptions.push(treeView);
+
 	context.subscriptions.push(
 		vscode.commands.registerCommand('hlslpreprocessor.loadVsdf', () => {
 			shaderTreeProvider.refresh();

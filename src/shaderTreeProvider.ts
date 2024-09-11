@@ -38,6 +38,14 @@ export class ShaderListEntry extends vscode.TreeItem {
     get isFile() {
         return this.model instanceof VsdfFile;
     }
+
+    get isShader() {
+        return this.model instanceof ShaderEntry;
+    }
+
+    get shaderDefinition() {
+        return this.model instanceof ShaderEntry ? this.model.shaderDefinition : null;
+    }
 }
 type ShaderTreeProviderEventType = ShaderListEntry | undefined | null | void;
 export class ShaderTreeProvider implements vscode.TreeDataProvider<ShaderListEntry> {
@@ -45,7 +53,6 @@ export class ShaderTreeProvider implements vscode.TreeDataProvider<ShaderListEnt
     #shaderMap: Map<string, ShaderDefinition[]> = new Map<string, ShaderDefinition[]>();
     private _onDidChangeTreeData: vscode.EventEmitter<ShaderTreeProviderEventType> = new vscode.EventEmitter<ShaderTreeProviderEventType>();
     readonly onDidChangeTreeData: vscode.Event<ShaderTreeProviderEventType> = this._onDidChangeTreeData.event;
-
     constructor() { }
 
     async refresh() {

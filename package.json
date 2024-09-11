@@ -38,8 +38,14 @@
     "views": {
       "shaderListView": [
         {
-          "id": "shaderListView",
-          "name": "ShaderListView",
+          "id": "shaderTreeView",
+          "name": "SHADER LIST",
+          "canToggleVisibility": true,
+          "icon": "resources/icon.svg"
+        },
+        {
+          "id": "shaderDefinesView",
+          "name": "DEFINED SYMBOLS",
           "canToggleVisibility": true,
           "icon": "resources/icon.svg"
         }
