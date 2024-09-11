@@ -1,5 +1,5 @@
 import { CodeNode } from "./hlslCodeTree";
-import { DefinedSymbol } from "./conditions";
+import { DefinedSymbol } from "./definedSymbol";
 
 export class HLSLFile {
     #rawCode: string;

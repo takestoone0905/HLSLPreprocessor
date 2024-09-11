@@ -49,7 +49,6 @@ export class ShaderListEntry extends vscode.TreeItem {
 }
 type ShaderTreeProviderEventType = ShaderListEntry | undefined | null | void;
 export class ShaderTreeProvider implements vscode.TreeDataProvider<ShaderListEntry> {
-    #shaderList: ShaderDefinition[] = [];
     #shaderMap: Map<string, ShaderDefinition[]> = new Map<string, ShaderDefinition[]>();
     private _onDidChangeTreeData: vscode.EventEmitter<ShaderTreeProviderEventType> = new vscode.EventEmitter<ShaderTreeProviderEventType>();
     readonly onDidChangeTreeData: vscode.Event<ShaderTreeProviderEventType> = this._onDidChangeTreeData.event;
@@ -63,8 +62,6 @@ export class ShaderTreeProvider implements vscode.TreeDataProvider<ShaderListEnt
 
     async loadShaderList() {
         const toFileName = (uri: vscode.Uri) => uri.toString().split('/').pop()!;
-
-        const shaderDefinisions: ShaderDefinition[] = [];
         const shaderMap: Map<string, ShaderDefinition[]> = new Map<string, ShaderDefinition[]>();
         const promises: any[] = [];
         await vscode.workspace.findFiles('**/*.vsdf.json').then((uris) => {
@@ -75,7 +72,6 @@ export class ShaderTreeProvider implements vscode.TreeDataProvider<ShaderListEnt
                         shaderMap.set(fileName, []);
                         const analyzeResult = SdfAnalyzer.analyze(content);
                         for (let i = 0; i < analyzeResult.length; i++) {
-                            shaderDefinisions.push(analyzeResult[i]);
                             shaderMap.get(fileName)!.push(analyzeResult[i]);
                         }
                     })
@@ -85,7 +81,6 @@ export class ShaderTreeProvider implements vscode.TreeDataProvider<ShaderListEnt
         await Promise.all(promises);
         // userがカスタムのdefineの組み合わせを作成できるようにする
         shaderMap.set("USER CUSTOM", []);
-        this.#shaderList = shaderDefinisions;
         this.#shaderMap = shaderMap;
     }
 

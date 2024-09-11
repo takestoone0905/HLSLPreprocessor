@@ -55,7 +55,7 @@
       "view/item/context": [
         {
           "command": "hlslpreprocessor.showCode",
-          "when": "view == shaderListView && viewItem == shader"
+          "when": "view == shaderTreeView && viewItem == shader"
         }
       ]
     }

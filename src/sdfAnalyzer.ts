@@ -1,8 +1,8 @@
-
+import { DefinedSymbol } from './definedSymbol';
 export class ShaderDefinition {
     #name: string = "";
-    #defines: string[] = [];
-    constructor(name: string, defines: string[]) {
+    #defines: DefinedSymbol[] = [];
+    constructor(name: string, defines: DefinedSymbol[]) {
         this.#name = name;
         this.#defines = defines;
     }
@@ -16,7 +16,7 @@ export class ShaderDefinition {
     }
 
     static Parse(json: { name: string, VS: string, PS: string }) {
-        const defineSet = new Set();
+        const defineSet = new Set<string>();
         const gatherDefines = (definesStr: string) => {
             definesStr.split(' ').forEach(line => {
                 const define = line.trim();
@@ -27,7 +27,8 @@ export class ShaderDefinition {
         };
         gatherDefines(json.VS);
         gatherDefines(json.PS);
-        return new ShaderDefinition(json.name, Array.from(defineSet) as string[]);
+
+        return new ShaderDefinition(json.name, Array.from(defineSet).map((d: string) => new DefinedSymbol(d)) as DefinedSymbol[]);
     }
 
     toString() {

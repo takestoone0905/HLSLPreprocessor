@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { DefinedSymbol } from './conditions';
+import { DefinedSymbol } from './definedSymbol';
 import { ShaderDefinition } from './sdfAnalyzer';
 export class ShaderDefineEntry extends vscode.TreeItem {
     constructor(
@@ -7,7 +7,7 @@ export class ShaderDefineEntry extends vscode.TreeItem {
         public readonly collapsibleState: vscode.TreeItemCollapsibleState
     ) {
         super(model.symbol, collapsibleState);
-        this.checkboxState = vscode.TreeItemCheckboxState.Checked;
+        this.checkboxState = model.isActive ? vscode.TreeItemCheckboxState.Checked : vscode.TreeItemCheckboxState.Unchecked;
     }
 
     get name() {
@@ -36,7 +36,7 @@ export class ShaderDefineProvider implements vscode.TreeDataProvider<ShaderDefin
             const result: ShaderDefineEntry[] = [];
             if (this.currentShader) {
                 for (const key of this.currentShader.defines) {
-                    result.push(new ShaderDefineEntry(new DefinedSymbol(key), vscode.TreeItemCollapsibleState.None));
+                    result.push(new ShaderDefineEntry(key, vscode.TreeItemCollapsibleState.None));
                 }
             }
             return Promise.resolve(result);

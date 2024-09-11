@@ -1,5 +1,6 @@
 import { ConditionParser } from "./conditionParser";
-import { DefinedSymbol, IConditionNode } from "./conditions";
+import { DefinedSymbol } from "./definedSymbol";
+import { IConditionNode } from "./conditions";
 
 export class CodeNode {
     #token: string = "";
