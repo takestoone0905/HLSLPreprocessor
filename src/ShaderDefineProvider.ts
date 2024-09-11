@@ -44,4 +44,21 @@ export class ShaderDefineProvider implements vscode.TreeDataProvider<ShaderDefin
             return Promise.resolve([]);
         }
     }
+
+    addDefine(symbol: string) {
+        if (this.currentShader && this.currentShader.isUserCustom && !this.currentShader.defines.find((define) => define.symbol === symbol)) {
+            this.currentShader.defines.push(new DefinedSymbol(symbol));
+            this._onDidChangeTreeData.fire();
+        }
+    }
+
+    removeDefine(symbol: string) {
+        if (this.currentShader && this.currentShader.isUserCustom) {
+            const index = this.currentShader.defines.findIndex((define) => define.symbol === symbol);
+            if (index >= 0) {
+                this.currentShader.defines.splice(index, 1);
+                this._onDidChangeTreeData.fire();
+            }
+        }
+    }
 }

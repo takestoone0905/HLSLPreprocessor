@@ -32,6 +32,14 @@
       {
         "command": "hlslpreprocessor.removeUserCustomShader",
         "title": "Remove User Custom Shader"
+      },
+      {
+        "command": "hlslpreprocessor.addDefinedSymbol",
+        "title": "+"
+      },
+      {
+        "command": "hlslpreprocessor.removeDefinedSymbol",
+        "title": "Remove User Custom Symbol"
       }
     ],
     "viewsContainers": {
@@ -63,7 +71,7 @@
       "view/item/context": [
         {
           "command": "hlslpreprocessor.showCode",
-          "when": "view == shaderTreeView && viewItem == shader"
+          "when": "view == shaderTreeView && (viewItem == shader || viewItem == userCustomShader)"
         },
         {
           "command": "hlslpreprocessor.addUserCustomShader",
@@ -72,6 +80,17 @@
         {
           "command": "hlslpreprocessor.removeUserCustomShader",
           "when": "view == shaderTreeView && viewItem == userCustomShader"
+        },
+        {
+          "command": "hlslpreprocessor.removeDefinedSymbol",
+          "when": "view == shaderDefinesView"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "hlslpreprocessor.addDefinedSymbol",
+          "when": "view == shaderDefinesView",
+          "group": "navigation"
         }
       ]
     }

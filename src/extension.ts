@@ -67,7 +67,12 @@ export async function activate(context: vscode.ExtensionContext) {
 
 	context.subscriptions.push(
 		vscode.commands.registerCommand('hlslpreprocessor.addUserCustomShader', () => {
-			shaderTreeProvider.addShader("UserCustom");
+			vscode.window.showInputBox().then((name) => {
+				if (!name) {
+					return;
+				}
+				shaderTreeProvider.addShader(name);
+			});
 		})
 	);
 
@@ -77,6 +82,22 @@ export async function activate(context: vscode.ExtensionContext) {
 		})
 	);
 
+	context.subscriptions.push(
+		vscode.commands.registerCommand('hlslpreprocessor.addDefinedSymbol', () => {
+			vscode.window.showInputBox().then((symbol) => {
+				if (!symbol) {
+					return;
+				}
+				shaderDefineProvider.addDefine(symbol!);
+			});
+		})
+	);
+
+	context.subscriptions.push(
+		vscode.commands.registerCommand('hlslpreprocessor.removeDefinedSymbol', (element) => {
+			shaderDefineProvider.removeDefine(element.name);
+		})
+	);
 
 	const disposable = vscode.commands.registerCommand('hlslpreprocessor.helloWorld', () => {
 		// The code you place here will be executed every time your command is executed
