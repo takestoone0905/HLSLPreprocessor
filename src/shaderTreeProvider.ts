@@ -25,7 +25,7 @@ export class ShaderListEntry extends vscode.TreeItem {
         if (this.isFile) {
             this.contextValue = 'vsdf';
         } else {
-            this.contextValue = 'shader';
+            this.contextValue = model.name === 'USER CUSTOM' ? 'USER CUSTOM' : 'shader';
         }
         this.tooltip = `${this.name}-Hello!`;
         this.description = `${this.name}ですよ`;
@@ -83,6 +83,8 @@ export class ShaderTreeProvider implements vscode.TreeDataProvider<ShaderListEnt
             });
         });
         await Promise.all(promises);
+        // userがカスタムのdefineの組み合わせを作成できるようにする
+        shaderMap.set("USER CUSTOM", []);
         this.#shaderList = shaderDefinisions;
         this.#shaderMap = shaderMap;
     }

@@ -3,14 +3,15 @@ import { DefinedSymbol } from './conditions';
 import { ShaderDefinition } from './sdfAnalyzer';
 export class ShaderDefineEntry extends vscode.TreeItem {
     constructor(
-        public readonly model: DefinedSymbol | ShaderDefinition,
+        public readonly model: DefinedSymbol,
         public readonly collapsibleState: vscode.TreeItemCollapsibleState
     ) {
-        super(model instanceof DefinedSymbol ? model.symbol : model.name, collapsibleState);
+        super(model.symbol, collapsibleState);
+        this.checkboxState = vscode.TreeItemCheckboxState.Checked;
     }
 
     get name() {
-        return this.model instanceof DefinedSymbol ? this.model.symbol : this.model.name;
+        return this.model.symbol;
     }
 }
 type ShaderDefineProviderEventType = ShaderDefineEntry | undefined | null | void;

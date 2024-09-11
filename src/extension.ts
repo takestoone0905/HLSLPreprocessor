@@ -24,34 +24,42 @@ export async function activate(context: vscode.ExtensionContext) {
 
 
 	const shaderDefineProvider = new ShaderDefineProvider();
-	vscode.window.registerTreeDataProvider(
-		'shaderDefinesView',
-		shaderDefineProvider
-	);
-
+	{
+		vscode.window.registerTreeDataProvider(
+			'shaderDefinesView',
+			shaderDefineProvider
+		);
+		const treeView = vscode.window.createTreeView('shaderDefinesView', { treeDataProvider: shaderDefineProvider });
+		treeView.onDidChangeCheckboxState((e) => {
+			for (const element of e.items) {
+				element[0].model.isActive = element[1] === vscode.TreeItemCheckboxState.Checked;
+			}
+		});
+	}
 
 	const shaderTreeProvider = new ShaderTreeProvider();
-	await shaderTreeProvider.loadShaderList();
-	vscode.window.registerTreeDataProvider(
-		'shaderTreeView',
-		shaderTreeProvider
-	);
+	{
+		await shaderTreeProvider.loadShaderList();
+		vscode.window.registerTreeDataProvider(
+			'shaderTreeView',
+			shaderTreeProvider
+		);
 
-	const treeView = vscode.window.createTreeView('shaderTreeView', { treeDataProvider: shaderTreeProvider });
-	treeView.onDidChangeSelection((e) => {
-		const selected = e.selection[0];
-		if (selected && selected.isShader) {
-			shaderDefineProvider.showShaderDefinition(selected.shaderDefinition);
-		}
-	});
-	context.subscriptions.push(treeView);
+		const treeView = vscode.window.createTreeView('shaderTreeView', { treeDataProvider: shaderTreeProvider });
+		treeView.onDidChangeSelection((e) => {
+			const selected = e.selection[0];
+			if (selected && selected.isShader) {
+				shaderDefineProvider.showShaderDefinition(selected.shaderDefinition);
+			}
+		});
+		context.subscriptions.push(treeView);
 
-	context.subscriptions.push(
-		vscode.commands.registerCommand('hlslpreprocessor.loadVsdf', () => {
-			shaderTreeProvider.refresh();
-		})
-	);
-
+		context.subscriptions.push(
+			vscode.commands.registerCommand('hlslpreprocessor.loadVsdf', () => {
+				shaderTreeProvider.refresh();
+			})
+		);
+	}
 
 	const disposable = vscode.commands.registerCommand('hlslpreprocessor.helloWorld', () => {
 		// The code you place here will be executed every time your command is executed

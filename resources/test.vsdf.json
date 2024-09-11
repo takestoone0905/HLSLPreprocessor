@@ -1,0 +1,32 @@
+{
+    "ShaderCombiners": [
+        {
+            "ShaderStages": [
+                {
+                    "name" : "Billboard",
+                    "VS" : ["test.hlsl","VS","-DBILLOARD"],
+                    "PS" : ["test.hlsl","PS","-DBILLOARD"]
+                },
+                {
+                    "name" : "Polygon",
+                    "VS" : ["test.hlsl","VS","-DPOLYGON"],
+                    "PS" : ["test.hlsl","PS","-DPOLYGON"]
+                }
+            ]
+        },
+        {
+            "ShaderStages": [
+                {
+                    "name" : "",
+                    "VS" : ["","",""],
+                    "PS" : ["","",""]
+                },
+                {
+                    "name" : "TexBlend",
+                    "VS" : ["","","-DTEXTURE_BLEND"],
+                    "PS" : ["","","-DTEXTURE_BLEND"]
+                }
+            ]
+        }
+    ]
+}
